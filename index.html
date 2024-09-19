@@ -3,40 +3,153 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Input Box Example</title>
+    <title>Test</title>
+    <link rel="stylesheet" href="styles.css">
     <style>
         body {
             font-family: Arial, sans-serif;
-            text-align: center;
-            margin-top: 50px;
         }
-        input {
-            padding: 10px;
-            width: 300px;
-            margin-right: 10px;
-        }
-        button {
-            padding: 10px 15px;
-        }
-        #output {
+        .stats {
+            display: none;
             margin-top: 20px;
-            font-size: 20px;
-            color: blue;
+        }
+        .stat-item {
+            margin-bottom: 10px;
+        }
+        .stat-item input {
+            width: 100px;
+            padding: 5px;
+        }
+        .result {
+            margin-top: 20px;
+            font-weight: bold;
+        }
+        .category-title {
+            margin-top: 20px;
+            font-weight: bold;
         }
     </style>
 </head>
-<body>
-    <h1>Enter Something:</h1>
-    <input type="text" id="userInput" placeholder="Type here..." required>
-    <button onclick="showInput()">Submit</button>
+<body style="background-color:#2a2a2a;">
+    <div class="container">Sword of Convallaria Damage Calculator</div>
+    <div class="requirement"><h1>Select a Character Category</h1></div>
 
-    <div id="output"></div>
+    <form id="character-form">
+        <!-- Dropdown for choosing the category -->
+        <label for="category-select">Choose Character Category:</label>
+        <select id="category-select" name="category">
+            <option value="">--Select a Category--</option>
+            <option value="physical">Physical Characters</option>
+            <option value="magical">Magical Characters</option>
+        </select>
+
+        <!-- Datalist for characters, filtered based on the selected category -->
+        <div class="category-title" id="physical-title" style="display:none;">Physical Characters:</div>
+        <input list="PhysicalCharacter" id="physical-character-select" name="Character" style="display:none;">
+        <datalist id="PhysicalCharacter">
+          <option value="Agatha">
+          <option value="Agile Eye">
+          <option value="Alexei">
+        </datalist>
+
+        <div class="category-title" id="magical-title" style="display:none;">Magical Characters:</div>
+        <input list="MagicalCharacter" id="magical-character-select" name="Character" style="display:none;">
+        <datalist id="MagicalCharacter">
+          <option value="Abyss">
+          <option value="Acambe">
+          <option value="Beryl">
+        </datalist>
+
+        <!-- Stats input fields -->
+        <div id="character-stats" class="stats">
+            <h3>Enter Character Stats</h3>
+            <div class="stat-item">
+                <label for="Patk">Patk: </label>
+                <input type="number" id="Patk" name="Patk" placeholder="Enter Patk">
+            </div>
+            <div class="stat-item">
+                <label for="Matk">Matk: </label>
+                <input type="number" id="Matk" name="Matk" placeholder="Enter Matk">
+            </div>
+            <button type="button" id="calculate-btn">Calculate</button>
+        </div>
+    </form>
+
+    <div id="calculation-result" class="result" style="display: none;">
+        <h3>Result:</h3>
+        <p id="result-text"></p>
+    </div>
 
     <script>
-        function showInput() {
-            const userInput = document.getElementById('userInput').value;
-            document.getElementById('output').innerText = `Your Input: ${userInput}`;
+        // Elements
+        const categorySelect = document.getElementById('category-select');
+        const physicalCharacterSelect = document.getElementById('physical-character-select');
+        const magicalCharacterSelect = document.getElementById('magical-character-select');
+        const physicalTitle = document.getElementById('physical-title');
+        const magicalTitle = document.getElementById('magical-title');
+        const characterStats = document.getElementById('character-stats');
+        const PatkInput = document.getElementById('Patk');
+        const MatkInput = document.getElementById('Matk');
+        const calculateBtn = document.getElementById('calculate-btn');
+        const calculationResult = document.getElementById('calculation-result');
+        const resultText = document.getElementById('result-text');
+
+        // Function to reset input fields
+        function resetStatsInputs() {
+            PatkInput.value = '';
+            MatkInput.value = '';
+            calculationResult.style.display = 'none'; // Hide previous result
         }
+
+        // Show/Hide the correct datalist based on category selection
+        categorySelect.addEventListener('change', function() {
+            const selectedCategory = categorySelect.value;
+
+            // Hide all options by default
+            physicalCharacterSelect.style.display = 'none';
+            magicalCharacterSelect.style.display = 'none';
+            physicalTitle.style.display = 'none';
+            magicalTitle.style.display = 'none';
+            characterStats.style.display = 'none';
+            calculationResult.style.display = 'none';
+
+            // Show the relevant input fields for Physical or Magical Characters
+            if (selectedCategory === 'physical') {
+                physicalCharacterSelect.style.display = 'inline';
+                physicalTitle.style.display = 'block';
+            } else if (selectedCategory === 'magical') {
+                magicalCharacterSelect.style.display = 'inline';
+                magicalTitle.style.display = 'block';
+            }
+        });
+
+        // Event listener when a character is selected from either category
+        physicalCharacterSelect.addEventListener('input', function() {
+            resetStatsInputs(); // Reset the stats fields
+            characterStats.style.display = 'block'; // Show stats input form
+        });
+
+        magicalCharacterSelect.addEventListener('input', function() {
+            resetStatsInputs(); // Reset the stats fields
+            characterStats.style.display = 'block'; // Show stats input form
+        });
+
+        // Event listener for the calculate button
+        calculateBtn.addEventListener('click', function() {
+            // Get the user inputs for some values
+            const PatkValue = PatkInput.value;
+            const MatkValue = MatkInput.value;
+
+            // Check if all values are filled in
+            if (PatkValue && MatkValue) {
+                // Checking all values are filled
+                resultText.textContent = `Patk: ${PatkValue}, Matk: ${MatkValue}`;
+                calculationResult.style.display = 'block';
+            } else {
+                alert("Please fill in all values before calculating.");
+            }
+        });
     </script>
+
 </body>
 </html>
